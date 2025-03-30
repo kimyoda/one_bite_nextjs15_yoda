@@ -5,5 +5,5 @@ export default function Page() {
 
   const { id } = router.query;
 
-  return <h1>{id}영화 상세페이지 </h1>;
+  return <h1>영화 상세페이지 {id} </h1>;
 }
