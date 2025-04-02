@@ -1,0 +1,61 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 40px 20px;
+  background-color: black;
+  color: white;
+  min-height: 100vh;
+}
+
+.cover_img_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.cover_img_container::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 0;
+}
+
+.cover_img_container img {
+  z-index: 1;
+  max-height: 360px;
+  height: 100%;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+}
+
+.title {
+  font-size: 28px;
+  font-weight: bold;
+  color: white;
+}
+
+.releaseDate {
+  font-size: 14px;
+  color: #cccccc;
+}
+
+.subTitle {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffdbdb;
+}
+
+.description {
+  font-size: 16px;
+  line-height: 1.6;
+}

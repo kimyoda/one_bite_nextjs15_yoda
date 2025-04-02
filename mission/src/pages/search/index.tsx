@@ -1,16 +1,30 @@
 import SearchableLayout from "@/components/searchable-layout";
-import { useRouter } from "next/router";
+
 import { ReactNode } from "react";
-import styles from "./search-result.module.css";
+import movies from "@/mock/movies.json";
+import MovieItem from "@/components/movie-item";
+import style from "./search-result.module.css";
+import { useRouter } from "next/router";
 
 export default function Page() {
   const router = useRouter();
   const { q } = router.query;
 
-  // 정확하게 undefined일 때만 "로딩 중..." 처리
-  if (q === undefined) return <p>로딩 중...</p>;
+  const query = typeof q === "string" ? q.toLowerCase() : "";
 
-  return <h1 className={styles.result}>검색결과: {q}</h1>;
+  const filteredMovies = movies.filter((movie) =>
+    `${movie.title}${movie.subTitle}${movie.description}`
+      .toLowerCase()
+      .includes(query)
+  );
+
+  return (
+    <div className={style.container}>
+      {filteredMovies.map((movie) => (
+        <MovieItem key={movie.id} {...movie} />
+      ))}
+    </div>
+  );
 }
 
 Page.getLayout = (page: ReactNode) => {

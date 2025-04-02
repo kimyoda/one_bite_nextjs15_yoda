@@ -1,0 +1,34 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.container h3 {
+  margin-bottom: 0px;
+  color: white;
+}
+
+.recommend_movie_section > div {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+}
+
+.every_section > div {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 5px;
+
+  /* 아래 속성을 추가해보세요 */
+  flex-wrap: wrap; /* 혹시 flex였다면 줄바꿈 허용 */
+  overflow-y: auto; /* 세로 스크롤 허용 */
+  max-height: 100vh;
+}
+
+.movie-item img {
+  width: 100%;
+  height: auto;
+  /* 필요한 경우 max-height 등도 지정 */
+  max-height: min-content;
+}

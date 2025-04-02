@@ -1,7 +1,6 @@
-.result {
-  color: white;
-  font-size: 30px;
-  font-weight: bold;
-  padding: 10px;
-  border-radius: 5px;
+.container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  /* 적절히 padding, margin, background-color 등등 원하는 스타일 추가 */
 }
