@@ -1,23 +1,27 @@
 /**
- * @module 메인 페이지
+ * @module 메인 페이지 (Static Site Generation)
  * @requires SearchableLayout - 검색 기능을 포함한 레이아웃 컴포넌트
- * @requires MovieItem - 영화 정보를 표시하는 카드 컴포넌트
- * @requires fetchMovies - 전체 영화 목록을 가져오는 API 함수
- * @requires fetchRandomMovies - 랜덤 영화 목록을 가져오는 API 함수
+ * @requires MovieItem - 영화 카드 컴포넌트
+ * @requires fetchMovies, fetchRandomMovies - 영화 데이터 fetch 함수
+ *
+ * @description
+ * 빌드 시점에 정적으로 생성되는 메인 페이지
+ * ISR(Incremental Static Regeneration)을 통한 주기적 데이터 갱신
  */
 
 import SearchableLayout from "@/components/searchable-layout";
 import { ReactNode } from "react";
 import style from "./index.module.css";
 import MovieItem from "@/components/movie-item";
-import { InferGetServerSidePropsType } from "next";
+import { InferGetStaticPropsType } from "next";
 import fetchMovies from "@/lib/fetch-movies";
 import fetchRandomMovies from "@/lib/fetch-random-movies";
 
 /**
+ * @function getServerSideProps → getStaticProps로 변경 예정
  * @description
- * 메인 페이지의 서버 사이드 데이터 페칭을 담당하는 함수
- * Promise.all을 사용하여 두 개의 API를 병렬로 호출
+ * 빌드 시점에 실행되어 정적 데이터를 생성
+ * Promise.all을 사용하여 두 API를 병렬로 호출
  *
  * @returns {Promise<{
  *   props: {
@@ -25,9 +29,16 @@ import fetchRandomMovies from "@/lib/fetch-random-movies";
  *     recoMovies: MovieData[]
  *   }
  * }>}
+ *
+ * @빌드타임_데이터_페칭
+ * 1. 전체 영화 목록과 추천 영화 목록을 동시에 가져옴
+ * 2. 정적 페이지 생성에 사용될 props 반환
+ * 3. revalidate 시간 설정으로 주기적 재생성
  */
 
-export const getServerSideProps = async () => {
+export const getStaticProps = async () => {
+  console.log("인덱스 페이지");
+
   const [allMovies, recoMovies] = await Promise.all([
     fetchMovies(),
     fetchRandomMovies(),
@@ -44,26 +55,23 @@ export const getServerSideProps = async () => {
 /**
  * @component Home
  * @description
- * 메인 페이지 컴포넌트
- * 두 개의 주요 섹션으로 구성:
- * 1. 추천 영화 섹션 - 랜덤하게 선택된 영화 표시
- * 2. 전체 영화 섹션 - 등록된 모든 영화 표시
+ * 정적으로 생성되는 메인 페이지 컴포넌트
  *
- * @실행흐름
- * 1. getServerSideProps에서 영화 데이터 페칭
- * 2. 받아온 데이터를 props로 전달
- * 3. 두 개의 섹션으로 구분하여 영화 목록 렌더링
- * 4. SearchableLayout으로 전체 페이지 래핑
+ * @데이터_최신성
+ * - ISR을 통한 주기적 데이터 갱신
+ * - 캐시된 페이지 즉시 제공 후 백그라운드 갱신
+ * - 새로운 데이터가 있을 경우 자동 업데이트
  *
- * @에러처리
- * - 데이터 페칭 실패 시 빈 배열 반환
- * - map 함수 사용 시 key prop으로 고유값 설정
+ * @성능최적화
+ * - 정적 생성으로 빠른 초기 로딩
+ * - 필요한 경우에만 페이지 재생성
+ * - SEO 최적화
  */
 
 export default function Home({
   allMovies,
   recoMovies,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <div className={style.container}>
       <section className={style.recommend_movie_section}>

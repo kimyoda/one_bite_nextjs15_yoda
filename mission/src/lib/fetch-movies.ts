@@ -6,12 +6,15 @@ import { MovieData } from "@/types";
 // @param q - 검색어 (선택적 매개변수)
 // @returns Promise<MovieData[]> - 영화 데이터 배열을 반환
 export default async function fetchMovies(q?: string): Promise<MovieData[]> {
-  let url = `http://localhost:12345/movie/`;
+  let url = `http://localhost:12345/movie`;
 
   // 검색어가 있는 경우 검색 쿼리 파라미터를 추가한다.
   if (q) {
-    url = `http://localhost:12345/movie/search?q=${encodeURIComponent(q)}`;
+    url += `/search?q=${q}`;
   }
+  // if (q) {
+  //   url = `http://localhost:12345/movie/search?q=${encodeURIComponent(q)}`;
+  // }
 
   try {
     // fetch API를 사용하여 서버에 GET 요청

@@ -1,73 +1,97 @@
 import SearchableLayout from "@/components/searchable-layout";
 
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import MovieItem from "@/components/movie-item";
 import style from "./search-result.module.css";
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import fetchMovies from "@/lib/fetch-movies";
+import { MovieData } from "@/types";
+import { useRouter } from "next/router";
 
 /**
- * @module 검색 결과 페이지
- * @requires SearchableLayout - 검색 기능을 포함한 레이아웃 컴포넌트
- * @requires MovieItem - 영화 정보를 표시하는 카드 컴포넌트
- * @requires fetchMovies - 검색 기능이 포함된 영화 조회 API 함수
+ * @module 검색 결과 페이지 (Server-Side Rendering)
+ * @requires SearchableLayout - 검색 기능 컴포넌트
+ * @requires MovieItem - 영화 카드 컴포넌트
+ *
+ * @description
+ * 검색어에 따라 실시간으로 결과를 보여주는 페이지
+ * SSR을 사용하여 매 요청마다 새로운 검색 결과 제공
  */
 
 /**
  * @function getServerSideProps
  * @description
- * URL의 쿼리 파라미터에서 검색어를 추출하여 영화를 검색하는 함수
+ * 매 요청마다 서버에서 실행되어 검색 결과를 제공
  *
- * @param {GetServerSidePropsContext} context - Next.js의 서버 사이드 컨텍스트
- * @returns {Promise<{ props: { searchedMovies: MovieData[] } }>}
+ * @실행흐름
+ * 1. 클라이언트 검색 요청 수신
+ * 2. 서버에서 검색어로 API 호출
+ * 3. 결과를 포함한 HTML 생성
+ * 4. 클라이언트에 전송
+ *
+ * @SEO
+ * - 검색 결과가 초기 HTML에 포함
+ * - 검색 엔진 크롤링 최적화
  */
 
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext
-) => {
-  // URL 쿼리 파라미터에서 검색어 추출
-  const q = context.query.q;
-  // 검색어를 사용하여 영화 목록 조회
-  const searchedMovies = await fetchMovies(q as string);
-  return {
-    props: {
-      searchedMovies,
-    },
-  };
-};
+// export const getServerSideProps = async (
+//   context: GetServerSidePropsContext
+// ) => {
+//   // URL 쿼리 파라미터에서 검색어 추출
+//   const q = context.query.q;
+//   // 검색어를 사용하여 영화 목록 조회
+//   const searchedMovies = await fetchMovies(q as string);
+//   return {
+//     props: {
+//       searchedMovies,
+//     },
+//   };
+// };
 
 /**
  * @component Page
  * @description
- * 검색 결과를 표시하는 페이지 컴포넌트
- * 검색 결과 유무에 따라 다른 UI 표시
+ * 검색 결과를 표시하는 컴포넌트
  *
- * @실행흐름
- * 1. URL 쿼리에서 검색어(q) 추출
- * 2. 검색어로 영화 검색 API 호출
- * 3. 검색 결과 존재 여부 확인
- * 4. 조건부 렌더링으로 결과 또는 메시지 표시
- *
- * @에러처리
- * - 검색 결과가 없을 경우 안내 메시지 표시
- * - 데이터 페칭 실패 시 빈 배열 처리
+ * @기능
+ * - 검색 결과 유무에 따른 조건부 렌더링
+ * - 결과 없을 경우 안내 메시지 표시
+ * - MovieItem 컴포넌트로 검색 결과 표시
  */
 
-export default function Page({
-  searchedMovies,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  // 영화가 없을 경우
-  const hasResultsMovies = searchedMovies.length > 0;
-  //
-  return (
-    <div className={style.container}>
-      {!hasResultsMovies ? (
-        <p className={style.no_result}>해당 영화는 존재하지 않습니다.</p>
-      ) : (
-        searchedMovies.map((movie) => <MovieItem key={movie.id} {...movie} />)
-      )}
-    </div>
-  );
+export default function Page() {
+  const [movies, setMovies] = useState<MovieData[]>([]);
+
+  // Next.js 라우터를 사용하여 URL 쿼리 파라미터 접근
+  const router = useRouter();
+  const q = router.query.q;
+  /**
+   * 검색어를 사용하여 영화 목록을 가져오는 함수
+   * - 클라이언트 사이드에서 API 호출
+   * - 검색 결과를 상태에 저장
+   * - 변경사항: 서버 사이드에서 클라이언트 사이드로 이동
+   */
+  const fetchSearchedResult = async () => {
+    const data = await fetchMovies(q as string);
+    setMovies(data);
+  };
+
+  // 검색어가 변경될 때마다 검색 결과를 업데이트
+  useEffect(() => {
+    if (q) {
+      // 검색어가 있는 경우에만 검색 실행
+      fetchSearchedResult();
+    }
+  }, [q]);
+
+  {
+    return (
+      <div className={style.container}>
+        {movies.map((movie) => (
+          <MovieItem key={movie.id} {...movie} />
+        ))}
+      </div>
+    );
+  }
 }
 
 Page.getLayout = (page: ReactNode) => {
