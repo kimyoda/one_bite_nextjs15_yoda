@@ -1,7 +1,12 @@
-import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
+import {
+  GetStaticPaths,
+  GetStaticPropsContext,
+  InferGetStaticPropsType,
+} from "next";
 import style from "./[id].module.css";
 import fetchOneMovie from "@/lib/fetch-one-movies";
 import { useRouter } from "next/router";
+import fetchMovies from "@/lib/fetch-movies";
 
 /**
  * @module 영화 상세 페이지 (Dynamic Routes with SSG)
@@ -64,19 +69,15 @@ import { useRouter } from "next/router";
  *         백그라운드에서 페이지를 생성한 후 업데이트
  */
 
-export const getStaticPaths = () => {
+export const getStaticPaths: GetStaticPaths = async () => {
+  const movies = await fetchMovies(); // ✅ 모든 영화 불러옴
+  const paths = movies.map(({ id }) => ({
+    params: { id: id.toString() },
+  }));
+
   return {
-    paths: [
-      { params: { id: "1" } },
-      { params: { id: "2" } },
-      { params: { id: "3" } },
-      { params: { id: "4" } },
-      { params: { id: "5" } },
-    ],
-    fallback: true,
-    // false: 404 NotFound
-    // blocking : SSR 방식
-    // true: SRR 방식 + 데이터가 없는 폴백 상태의 페이지부터 반환해주고 나머지는 빌드 시점에 미리 생성
+    paths,
+    fallback: true, // ✅ fallback true니까 isFallback 체크 가능
   };
 };
 
