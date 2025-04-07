@@ -15,7 +15,7 @@
  * 4. 에러 발생시 null 반환 및 에러 로깅
  */
 export default async function fetchOneMovie(id: number) {
-  const url = `http://localhost:12345/movie/${id}`;
+  const url = `https://onebite-cinema-api-pi.vercel.app/movie/${id}`;
 
   try {
     const response = await fetch(url);

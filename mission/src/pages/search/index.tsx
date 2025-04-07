@@ -6,6 +6,7 @@ import style from "./search-result.module.css";
 import fetchMovies from "@/lib/fetch-movies";
 import { MovieData } from "@/types";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 /**
  * @module 검색 결과 페이지 (Server-Side Rendering)
@@ -86,6 +87,15 @@ export default function Page() {
   {
     return (
       <div className={style.container}>
+        <Head>
+          <title>한입시네마 - 검색결과</title>
+          <meta property="og:image" content="/thumbnail.png" />
+          <meta property="og:title" content="한입시네마" />
+          <meta
+            property="og:description"
+            content="한입 시네마에 등록된 영화들을 감상하세요"
+          />
+        </Head>
         {movies.map((movie) => (
           <MovieItem key={movie.id} {...movie} />
         ))}

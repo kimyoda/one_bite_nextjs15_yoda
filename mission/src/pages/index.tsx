@@ -16,6 +16,7 @@ import MovieItem from "@/components/movie-item";
 import { InferGetStaticPropsType } from "next";
 import fetchMovies from "@/lib/fetch-movies";
 import fetchRandomMovies from "@/lib/fetch-random-movies";
+import Head from "next/head";
 
 /**
  * @function getServerSideProps → getStaticProps로 변경 예정
@@ -37,8 +38,6 @@ import fetchRandomMovies from "@/lib/fetch-random-movies";
  */
 
 export const getStaticProps = async () => {
-  console.log("인덱스 페이지");
-
   const [allMovies, recoMovies] = await Promise.all([
     fetchMovies(),
     fetchRandomMovies(),
@@ -49,6 +48,7 @@ export const getStaticProps = async () => {
       allMovies,
       recoMovies,
     },
+    revalidate: 20,
   };
 };
 
@@ -73,24 +73,35 @@ export default function Home({
   recoMovies,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
-    <div className={style.container}>
-      <section className={style.recommend_movie_section}>
-        <h3>지금 가장 추천하는 영화</h3>
-        <div>
-          {recoMovies.map((movie) => (
-            <MovieItem key={movie.id} {...movie} />
-          ))}
-        </div>
-      </section>
-      <section className={style.every_section}>
-        <h3>등록된 모든 영화</h3>
-        <div>
-          {allMovies.map((movie) => (
-            <MovieItem key={movie.id} {...movie} />
-          ))}
-        </div>
-      </section>
-    </div>
+    <>
+      <Head>
+        <title>한입시네마</title>
+        <meta property="og:image" content="/thumbnail.png" />
+        <meta property="og:title" content="한입시네마" />
+        <meta
+          property="og:description"
+          content="한입 시네마에 등록된 영화들을 감상하세요"
+        />
+      </Head>
+      <div className={style.container}>
+        <section className={style.recommend_movie_section}>
+          <h3>지금 가장 추천하는 영화</h3>
+          <div>
+            {recoMovies.map((movie) => (
+              <MovieItem key={movie.id} {...movie} />
+            ))}
+          </div>
+        </section>
+        <section className={style.every_section}>
+          <h3>등록된 모든 영화</h3>
+          <div>
+            {allMovies.map((movie) => (
+              <MovieItem key={movie.id} {...movie} />
+            ))}
+          </div>
+        </section>
+      </div>
+    </>
   );
 }
 

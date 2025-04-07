@@ -17,7 +17,7 @@ import { MovieData } from "@/types";
  */
 export default async function fetchRandomMovies(): Promise<MovieData[]> {
   // 랜덤 영화 목록을 조회하기 위한 API 엔드포인트 URL 설정
-  const url = `http://localhost:12345/movie/random`;
+  const url = `https://onebite-cinema-api-pi.vercel.app/movie/random`;
 
   try {
     // fetch API를 사용하여 서버에 GET 요청
