@@ -1,0 +1,20 @@
+/* 메인 컨테이너 스타일 */
+.container {
+  padding: 0px 20px; /* 좌우 패딩 */
+  max-width: 800px; /* 최대 너비 제한 */
+  margin: 0 auto; /* 중앙 정렬 */
+}
+
+/* 헤더 영역 스타일 */
+.container > header {
+  padding: 20px 0px; /* 상하 패딩 */
+}
+
+/* 헤더 내부 링크 스타일 */
+.container > header > a {
+  color: #e50914; /* 넷플릭스 레드 색상 */
+  font-weight: bold; /* 굵은 글씨 */
+  font-size: 20px; /* 글자 크기 */
+  cursor: pointer; /* 마우스 오버시 포인터 커서 */
+  text-decoration: none; /* 밑줄 제거 */
+}

@@ -1,0 +1,66 @@
+/* 메인 컨테이너 스타일 */
+.container {
+  display: flex; /* flexbox 레이아웃 사용 */
+  flex-direction: column; /* 세로 방향 정렬 */
+  gap: 10px; /* 자식 요소들 사이의 간격 */
+}
+
+/* 포스터 이미지 컨테이너 스타일 */
+.cover_img_container {
+  display: flex; /* flexbox 레이아웃 사용 */
+  justify-content: center; /* 가로 중앙 정렬 */
+  padding: 20px; /* 내부 여백 */
+
+  background-position: center; /* 배경 이미지 중앙 정렬 */
+  background-repeat: no-repeat; /* 배경 이미지 반복 없음 */
+  background-size: cover; /* 배경 이미지 크기 조정 */
+
+  position: relative; /* 상대 위치 지정 */
+}
+
+/* 포스터 이미지 컨테이너 오버레이 */
+.cover_img_container::before {
+  position: absolute; /* 절대 위치 지정 */
+  top: 0px; /* 상단 위치 */
+  left: 0p; /* 좌측 위치 */
+  width: 100%; /* 전체 너비 */
+  height: 100%; /* 전체 높이 */
+  background-color: rgba(0, 0, 0, 0.7); /* 반투명 검은색 배경 */
+  content: ""; /* 가상 요소 내용 */
+}
+
+/* 포스터 이미지 스타일 */
+.cover_img_container > img {
+  z-index: 1; /* 오버레이 위에 표시 */
+  max-height: 350px; /* 최대 높이 제한 */
+  height: 100%; /* 컨테이너 높이에 맞춤 */
+}
+
+/* 제목 스타일 */
+.container h2 {
+  margin: 0px; /* 여백 제거 */
+}
+
+/* 정보 컨테이너 스타일 */
+.container .info_container {
+  display: flex; /* flexbox 레이아웃 사용 */
+  flex-direction: column; /* 세로 방향 정렬 */
+  gap: 20px; /* 자식 요소들 사이의 간격 */
+}
+
+/* 정보 섹션 스타일 */
+.container .info_container > div {
+  display: flex; /* flexbox 레이아웃 사용 */
+  flex-direction: column; /* 세로 방향 정렬 */
+  gap: 10px; /* 자식 요소들 사이의 간격 */
+}
+
+/* 부제목 스타일 */
+.container .info_container .subTitle {
+  font-weight: bold; /* 굵은 글씨 */
+}
+
+/* 설명 텍스트 스타일 */
+.container .info_container .description {
+  line-height: 1.5; /* 줄 간격 */
+}
