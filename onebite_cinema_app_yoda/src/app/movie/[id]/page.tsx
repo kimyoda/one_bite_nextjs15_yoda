@@ -1,9 +1,24 @@
 import style from "./page.module.css";
-import movies from "@/dummy.json";
 
-export default function Page() {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string | string[] }>;
+}) {
+  const { id } = await params;
+
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/movie/${id}`,
+    // 무비 페이지는 서버 측 렌더링을 보장해야 하므로 캐시를 사용하지 않는다.
+    { cache: "no-store" }
+  );
+  if (!response.ok) {
+    return <div>오류가 발생했습니다!!</div>;
+  }
+
+  const movie = await response.json();
+
   const {
-    id,
     title,
     subTitle,
     company,
@@ -12,7 +27,7 @@ export default function Page() {
     posterImgUrl,
     releaseDate,
     genres,
-  } = movies[3];
+  } = movie;
 
   return (
     <div className={style.container}>
