@@ -12,7 +12,9 @@ export default async function Page({
 
   // API 서버에 검색 요청을 보내고 결과를 가져온다
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/movie/search?q=${q}`
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/movie/search?q=${q}`,
+    // 요청 결과를 무조건 캐싱, 첫 호출 이후에는 캐시된 데이터를 사용한다.
+    { cache: "force-cache" }
   );
 
   if (!response.ok) {
