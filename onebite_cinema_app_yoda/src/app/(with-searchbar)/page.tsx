@@ -8,8 +8,8 @@ async function AllMovies() {
   // API 서버에서 모든 영화 데이터를 가져온다.
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_SERVER_URL}/movie`,
-    // 모든 영화 리스트는 항상 최신 상태를 유지해야 하므로 캐싱을 하지 않는다.
-    { cache: "no-store" }
+
+    { cache: "force-cache" }
   );
 
   if (!response.ok) {
