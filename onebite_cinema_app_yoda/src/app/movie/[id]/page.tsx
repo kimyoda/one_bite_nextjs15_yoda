@@ -1,4 +1,26 @@
+import { notFound } from "next/navigation";
 import style from "./page.module.css";
+import { MovieData } from "@/type";
+
+// ✅ 새로 추가된 부분: 전체 영화 리스트 기반으로 static 경로 생성
+export async function generateStaticParams() {
+  // 📌 빌드 타임에 전체 영화 목록을 가져와서 정적 경로로 생성한다.
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/movie`,
+    {
+      // 정적 빌드이므로 캐시 허용
+      cache: "force-cache",
+    }
+  );
+
+  if (response.ok) {
+    const allMovies: MovieData[] = await response.json();
+    // 📌 각 영화 ID를 기반으로 경로 param 생성
+    return allMovies.map((el) => ({ id: String(el.id) }));
+  }
+  // 📌 API 실패 시에도 빌드 오류 방지를 위해 빈 배열 반환
+  return [];
+}
 
 export default async function Page({
   params,
@@ -13,6 +35,9 @@ export default async function Page({
     { cache: "no-store" }
   );
   if (!response.ok) {
+    if (response.status === 404) {
+      notFound();
+    }
     return <div>오류가 발생했습니다!!</div>;
   }
 
