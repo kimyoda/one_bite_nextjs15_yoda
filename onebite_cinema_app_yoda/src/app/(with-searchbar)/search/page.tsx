@@ -1,12 +1,14 @@
 import MovieItem from "@/components/movie-item";
 import style from "./page.module.css";
 import { MovieData } from "@/type";
+import { delay } from "@/util/delay";
 
 export default async function Page({
   searchParams, // URL의 쿼리 파라미터를 받는 객체
 }: {
   searchParams: Promise<{ q?: string }>;
 }) {
+  await delay(1500);
   // 검색어 초출
   const { q } = await searchParams;
 
