@@ -1,6 +1,5 @@
 import MovieItem from "@/components/movie-item";
 import style from "./page.module.css";
-import movies from "@/dummy.json";
 import { MovieData } from "@/type";
 
 // 모든 영화를 가져오는 컴포넌트
@@ -49,6 +48,9 @@ async function RecoMovies() {
     </div>
   );
 }
+
+// 다이나믹 페이지를 적용한다
+export const dynamic = "force-dynamic";
 
 export default function Home() {
   return (
